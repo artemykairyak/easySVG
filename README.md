@@ -14,3 +14,9 @@
 `<div class="svg red" data-src="path/logo.svg"></div>`  
 трансформируется в  
 `<svg xmlns="http://www.w3.org/2000/svg" width="151" height="40" viewBox="0 0 151 40" class="red">...</svg>`
+
+***
+
+**Методы**
+1. SVGrefresh()<br>
+Проходится по элементам, которые были добавлены AJAX-ом или любым другим методом изменения DOM, и выполняет преобразование в SVG, если это нужно.

@@ -1,48 +1,62 @@
-const svgArr = document.querySelectorAll('.svg');
+document.addEventListener("DOMContentLoaded", function() {
+    easySVG();
+});
 
-for(var i = 0; i < svgArr.length; i++) {
-	const path = svgArr[i].dataset.src;
-	replaceSvg(svgArr[i], path);
+function SVGrefresh() {
+    easySVG();
+}
+
+function easySVG() {
+    const svgArr = document.querySelectorAll('.svg');
+
+    for (var i = 0; i < svgArr.length; i++) {
+        const path = svgArr[i].dataset.src;
+        replaceSvg(svgArr[i], path);
+    }
 }
 
 function replaceSvg(elem, path) {
-	if('ActiveXObject' in window){
-		let IErequest = new ActiveXObject('MSXML2.XMLHTTP');
-		IErequest.onReadyStateChange = function() {
-			if (IErequest.readyState === 4 && IErequest.status === 200) {
-				const attr = elem.getAttribute('class');
-				const noSvgClassAttr = attr.slice(attr.indexOf('svg') + 3);
+    if ('ActiveXObject' in window) {
+        let IErequest = new ActiveXObject('MSXML2.XMLHTTP');
+        IErequest.onReadyStateChange = function() {
+            if (IErequest.readyState === 4 && IErequest.status === 200) {
+                const attr = elem.getAttribute('class');
+                const noSvgClassAttr = attr.slice(attr.indexOf('svg') + 3);
 
-				elem.insertAdjacentHTML('afterend', IErequest.responseText);
-				
-				if(noSvgClassAttr.length) {
-					elem.nextSibling.setAttribute('class', noSvgClassAttr.trim());
-				}
+                if (elem.parentNode) {
+                    elem.insertAdjacentHTML('afterend', IErequest.responseText);
 
-				elem.parentNode.removeChild(document.querySelector('div.svg'));
-			}
-		}
-		IErequest.open('GET', path);
-		IErequest.send();
+                    if (noSvgClassAttr.length) {
+                        elem.nextSibling.setAttribute('class', noSvgClassAttr.trim());
+                    }
 
-	} else{
-		let request = new XMLHttpRequest();
-		request.open('GET', path);
-		request.addEventListener("readystatechange", () => {
-			if (request.readyState === 4 && request.status === 200) {
-				const attr = elem.getAttribute('class');
-				const noSvgClassAttr = attr.slice(attr.indexOf('svg') + 3);
+                    elem.parentNode.removeChild(document.querySelector('.svg'));
+                }
+            }
+        }
+        IErequest.open('GET', path);
+        IErequest.send();
 
-				elem.insertAdjacentHTML('afterend', request.responseText);
+    } else {
+        let request = new XMLHttpRequest();
+        request.open('GET', path);
+        request.addEventListener("readystatechange", () => {
+            if (request.readyState === 4 && request.status === 200) {
+                const attr = elem.getAttribute('class');
+                const noSvgClassAttr = attr.slice(attr.indexOf('svg') + 3);
 
-				if(noSvgClassAttr.length) {
-					elem.nextSibling.setAttribute('class', noSvgClassAttr.trim());
-				}
+                if (path && elem.parentNode) {
+                    elem.insertAdjacentHTML('afterend', request.responseText);
 
-				elem.remove();
-			}
-		});
+                    if (noSvgClassAttr.length) {
+                        elem.nextSibling.setAttribute('class', noSvgClassAttr.trim());
+                    }
+                }
 
-		request.send();
-	}
+                elem.remove();
+            }
+        });
+
+        request.send();
+    }
 }
